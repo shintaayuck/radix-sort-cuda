@@ -54,10 +54,7 @@ int* generate_index_up(int* flag, int n) {
 }
 
 __global__
-void permute(int* arr, int* temps, int* flag, int* index_down, int* index_up, int* arr_idx int n) {
-
-	int index = blockIdx.x * blockDim.x + threadIdx.x;
-	int stride = blockDim.x * gridDim.x;
+void permute(int* arr, int* temps, int* flag, int* index_down, int* index_up, int* indexes, int n) {
 
     for (i = index; i < n; i+=stride) {
         if (flag[i]) {
@@ -66,30 +63,42 @@ void permute(int* arr, int* temps, int* flag, int* index_down, int* index_up, in
             indexes[i] = index_up[i];
         }
     }
-	cudaDeviceSynchronize();
-
-    for (i = index; i < n; i+=stride) {
-        arr[indexes[i]] = temps[i];
-    }
-
+	assign_permute(n, arr, indexes, temps);
 }
+
+void assign_permute(int n, int* arr, int* indexes, int* temps) {
+	int index = blockIdx.x * blockDim.x + threadIdx.x;
+	int stride = blockDim.x * gridDim.x;
+
+	for (int i = index; i < n; i+=stride) {
+		arr[indexes[i]] = temps[i];
+	}
+}
+
 
 void split(int n, int idx, int* d_arr) {
     // assign flags
-	int* flags, d_flags;
+	int* d_flags;
 	cudaMalloc(&d_flags, sizeof(int) * n);
 
 	int block_size = 256; // harus bisa dibagi 32
 	int num_blocks = block_size + n - 1;
 
     generate_flags<<<num_blocks, block_size>>>(d_arr, n, idx, d_flags);
-	cudaDeviceSynchronize();
 
-	flags = (int*) malloc(sizeof(int)*n);
+	copy_to_device();
+
+}
+
+void copy_to_device(int n, int* d_flags, int* d_arr) {
+	int block_size = 256; // harus bisa dibagi 32
+	int num_blocks = block_size + n - 1;
+
+	int* flags = (int*) malloc(sizeof(int)*n);
 	cudaMemcpy(flags, d_flags, sizeof(int), cudaMemcpyDeviceToHost);
 
-    int* index_down = generate_index_down(flag, n);
-    int* index_up = generate_index_up(flag, n);
+    int* index_down = generate_index_down(flags, n);
+    int* index_up = generate_index_up(flags, n);
 
 	int *d_temps, *d_arr_idx, *d_idx_down, *d_idx_up;
 	cudaMalloc(&d_temps, sizeof(int)*n);
@@ -104,7 +113,6 @@ void split(int n, int idx, int* d_arr) {
 	cudaMemcpy(d_idx_up, index_up, sizeof(int)*n, cudaMemcpyHostToDevice);
 
     permute<<<num_blocks, block_size>>>(d_arr, d_temps, flag, d_index_down, d_index_up, d_arr_idx, n);
-	cudaDeviceSynchronize();
 
 	cudaFree(d_flags);
 	cudaFree(d_temps);
@@ -113,6 +121,7 @@ void split(int n, int idx, int* d_arr) {
 	cudaFree(d_arr_idx);
 
 	free(flags);
+
 }
 
 
