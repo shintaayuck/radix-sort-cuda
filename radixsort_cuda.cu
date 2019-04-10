@@ -3,8 +3,6 @@
 #include <string.h>
 #include <math.h>
 #include <cuda_runtime.h>
-#include <helper_cuda.h>
-#include <helper_functions.h>
 #include "device_launch_parameters.h"
 
 extern "C"
@@ -166,16 +164,15 @@ int main(int argc, char** argv) {
 
 
 	// int n = atoi(argv[1]);
-	int n = 10;
+	int n = 1000;
 	int* arr = (int*)malloc(sizeof(int)*n);
 
 	// rng(arr, n);
 	clock_t start = clock();
 	radix_sort(arr, n);
-	print(arr, n);
 	clock_t end = clock();
-	double total_time = ((double)(end - start)) / (CLOCKS_PER_SEC / 1000);
 	print(arr, n);
+	double total_time = ((double)(end - start)) / (CLOCKS_PER_SEC / 1000);
 	printf("%f\n", total_time);
 
 
