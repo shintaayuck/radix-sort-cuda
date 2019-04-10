@@ -157,17 +157,16 @@ void print(int* arr, int n)
 }
 
 int main(int argc, char** argv) {
-	// if (argc<2) {
-	//   printf("Usage : radix_sort <array length>\n");
-	//   return 0;
-	// }
+	if (argc<2) {
+		printf("Usage : radix_sort <array length>\n");
+		return 0;
+	}
 
 
-	// int n = atoi(argv[1]);
-	int n = 1000;
+	int n = atoi(argv[1]);
 	int* arr = (int*)malloc(sizeof(int)*n);
 
-	// rng(arr, n);
+	rng(arr, n);
 	clock_t start = clock();
 	radix_sort(arr, n);
 	clock_t end = clock();
