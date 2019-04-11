@@ -26,7 +26,7 @@ RADIX SORT USING OPENMPI
 2. Salin perintah yang muncul di terminal
 3. Jalankan perintah tersebut
 4. Untuk menjalankan program, jalankan
-```mpirun -np <jumlah-proses> mpi_parallel <jumlah-data>```
+```./radix_sort <Jumlah Elemen Array>```
 ## Solusi
 ### Deskripsi Solusi
 Implementasi penyelesaian radix sort yang diterapkan pada program kami mengikuti implementasi prefix sum dari [referensi](https://www.cs.cmu.edu/~guyb/papers/Ble93.pdf) dengan sedikit penyesuaian. Secara garis besar, implementasi radix sort yang kami gunakan menggunakan bitwise sort, yaitu membandingkan tiap bit dimulai dari *least significant bit*. Setelah itu, kami membuat semua iterasi yang memungkinkan diproses paralel untuk dijalankan secara paralel. Kami mendefinisikan kriteria iterasi yang bisa diparalelkan sebagai iterasi yang berisi *assignment* dan tidak bergantung dengan elemen lain.
@@ -81,8 +81,8 @@ Berdasarkan percobaan yang dilakukan, secara garis besar kinerja program paralel
 ## Pembagian Tugas
 | Shinta (13516029) | Naufal (13516110) |
 |--- | --- |
-|Implementasi program serial |Implementasi program paralel |
-|Membuat Readme.MD |  |
+|Implementasi program parallel |Implementasi program serial |
+|Membuat Readme.MD | Membuat Readme.MD |
 
 ### Credits
 - Shinta Ayu Chandra Kemala (13516029)
