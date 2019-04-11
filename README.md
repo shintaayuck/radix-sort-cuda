@@ -1,4 +1,4 @@
-RADIX SORT USING OPENMPI
+RADIX SORT USING CUDA
 -----------------------
 
 ## Daftar Isi
@@ -35,16 +35,17 @@ Implementasi penyelesaian radix sort yang diterapkan pada program kami mengikuti
 Diterapkan asumsi bahwa bila seluruh iterasi yang bisa diparalelkan diterapkan paralel, maka kinerjanya akan lebih cepat. Untuk algoritma yang dipilih, mungkin ada yang lebih baik tapi kami belum menemukannya. Algoritma yang kami pilih sudah cukup optimal karena memparalelkan hanya di lokasi yang tepat dan secara komputasi sudah lebih cepat dari serial pada jumlah proses tertentu.
 
 ### Jumlah thread
-Jumlah thread per block yang kami anggap paling optimal adalah X, karena berdasarkan uji coba yang dilakukan, jumlah thread yang memberikan nilai terbaik dengan konsistensi yang sama baiknya adalah X. Bila jumlah thread per block dikurangi, pengerjaan paralel tidak optimal, namun bila jumlah thread per block ditambah, overhead untuk menggabungkan hasil perhitungan paralel juga bertambah.
+Jumlah thread per block yang kami anggap paling optimal adalah 256, karena berdasarkan uji coba yang dilakukan, jumlah thread yang memberikan nilai terbaik dengan konsistensi yang sama baiknya adalah 256. Bila jumlah thread per block dikurangi atau ditambah, pengerjaan paralel tidak optimal.
 
 ### Pengukuran kinerja
 Untuk setiap studi kasus, dilakukan tiga kali komputasi dan yang kami cantumkan adalah waktu rata-rata dari tiga kali percobaan.
+
 #### Studi Kasus 1
 N = 5.000
 
 Waktu sorting serial = 15,203 ms
 
-Waktu sorting paralel = 7,424 ms
+Waktu sorting paralel = 193,549333333 ms
 
 
 #### Studi Kasus 2
@@ -52,31 +53,31 @@ N = 50.000
 
 Waktu sorting serial = 109,144 ms
 
-Waktu sorting paralel = 80,622 ms
+Waktu sorting paralel = 227, 7963 ms
 
 #### Studi Kasus 3
 N = 100.000
 
 Waktu sorting serial = 211,574 ms
 
-Waktu sorting paralel = 154,029 ms
+Waktu sorting paralel = 238,3423 ms
 
 #### Studi Kasus 4
 N = 200.000
 
 Waktu sorting serial = 419,473 ms
 
-Waktu sorting paralel = 294,324 ms
+Waktu sorting paralel = 262,979 ms
 
 #### Studi Kasus 5
 N = 400.000
 
 Waktu sorting serial = 838,413 ms
 
-Waktu sorting paralel = 614,840 ms
+Waktu sorting paralel = 338,842 ms
 
 ### Analisis Perbandingan kinerja
-Berdasarkan percobaan yang dilakukan, secara garis besar kinerja program paralel lebih cepat di kisaran 50%-115%, hal ini terjadi karena operasi pada senarai dibagi ke beberapa proses sehingga memotong waktu pemrosesan, dengan overhead penggabungan hasil operasi yang tidak terlalu besar sehingga tetap lebih efisien.
+Berdasarkan percobaan yang dilakukan, performa sorting parallel bekerja lebih cepat dibandingkan serial untuk jumlah elemen array yang sangat besar, yaitu kurang lebih diatas 100.000 elemen. Namun parallel akan lebih lambat untuk jumlah array yang lebih kecil. Berdasarkan analisis kami, hal tersebut dikarenakan operasi parallel memiliki overhead time ketika melakukan alokasi memori. Sehingga, untuk jumlah elemen yang sedikit, waktu overhead tersebut akan membuat proses parallel lebih lambat.
 
 ## Pembagian Tugas
 | Shinta (13516029) | Naufal (13516110) |
